@@ -1,0 +1,15 @@
+package com.capg.springboot;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class JobPortalJobServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(JobPortalJobServiceApplication.class, args);
+        System.out.println("Job Portal Job Service is now live on port 8082...");
+    }
+}
