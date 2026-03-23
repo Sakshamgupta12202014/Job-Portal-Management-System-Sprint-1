@@ -1,0 +1,64 @@
+# ============================================================
+#   Job Portal - Application Service Configuration
+#   Port: 8083
+# ============================================================
+
+server:
+  port: 8083
+
+spring:
+  application:
+    name: APPLICATION-SERVICE   # Must match what the Feign client looks up in Eureka
+
+  # Database connection
+  datasource:
+    url: jdbc:mysql://localhost:3306/jobportal_app_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA / Hibernate settings
+  jpa:
+    hibernate:
+      ddl-auto: update    # Creates/updates tables automatically on startup
+    show-sql: true        # Print SQL queries in console (useful for debugging)
+    properties:
+      hibernate:
+        format_sql: true  # Print SQL in readable format
+
+  # File upload size limits
+  # If resume is bigger than this, MaxUploadSizeExceededException is thrown
+  # Our GlobalExceptionHandler catches it and returns 413
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+# Eureka registration - so other services can find this service
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+
+# Folder where uploaded resume files are saved
+# Change this to an S3 bucket path in production
+file:
+  upload-dir: ./uploads
+
+# Swagger UI settings
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# Actuator endpoints (health check)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

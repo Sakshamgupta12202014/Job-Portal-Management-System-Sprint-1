@@ -1,16 +1,18 @@
 package com.capg.springboot.controller;
 
-import com.capg.springboot.dto.*;
+import com.capg.springboot.dto.PagedResponse;
+import com.capg.springboot.dto.ReportResponse;
+import com.capg.springboot.dto.UserStatusUpdateRequest;
+import com.capg.springboot.dto.UserSummary;
 import com.capg.springboot.enums.Role;
 import com.capg.springboot.enums.UserStatus;
 import com.capg.springboot.feign.JobServiceClient;
 import com.capg.springboot.service.AdminService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")

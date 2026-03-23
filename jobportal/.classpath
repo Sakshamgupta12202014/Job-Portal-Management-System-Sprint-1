@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="JobPortal-AdminService/src/main/java"/>
+	<classpathentry kind="src" path="JobPortal-AdminService/src/test/java"/>
+	<classpathentry kind="src" path="JobPortal-ApiGateway/src/main/java"/>
+	<classpathentry kind="src" path="JobPortal-ApiGateway/src/test/java"/>
+	<classpathentry kind="src" path="JobPortal-ApplicationService/src/main/java"/>
+	<classpathentry kind="src" path="JobPortal-ApplicationService/src/test/java"/>
+	<classpathentry kind="src" path="JobPortal-AuthService/src/main/java"/>
+	<classpathentry kind="src" path="JobPortal-AuthService/src/test/java"/>
+	<classpathentry kind="src" path="JobPortal-EurekaServer/src/main/java"/>
+	<classpathentry kind="src" path="JobPortal-EurekaServer/src/test/java"/>
+	<classpathentry kind="src" path="JobPortal-JobService/src/main/java"/>
+	<classpathentry kind="src" path="JobPortal-JobService/src/test/java"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
