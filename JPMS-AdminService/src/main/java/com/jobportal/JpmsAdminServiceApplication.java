@@ -10,6 +10,6 @@ public class JpmsAdminServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(JpmsAdminServiceApplication.class, args);
+		System.out.println("JPMS Admin Service is running on port 8084...");
 	}
-
 }

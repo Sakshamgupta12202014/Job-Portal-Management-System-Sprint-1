@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "JOB-SERVICE")
+@FeignClient(name = "job-service")
 public interface AdminJobClient {
 
     @GetMapping("/api/internal/jobs/all")

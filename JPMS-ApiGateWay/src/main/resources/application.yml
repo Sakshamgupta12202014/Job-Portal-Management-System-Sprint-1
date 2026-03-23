@@ -1,35 +1,52 @@
 server:
-  port: 8080
+  port: 9090
 
 spring:
   application:
-    name: API-GATEWAY
-  main:
-    web-application-type: reactive
+    name: api-gateway
+
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
       routes:
         - id: auth-service
-          uri: lb://AUTH-SERVICE
+          uri: lb://auth-service
           predicates:
             - Path=/api/auth/**
+
         - id: job-service
-          uri: lb://JOB-SERVICE
+          uri: lb://job-service
           predicates:
             - Path=/api/jobs/**
+
         - id: application-service
-          uri: lb://APPLICATION-SERVICE
+          uri: lb://application-service
           predicates:
             - Path=/api/applications/**
+
         - id: admin-service
-          uri: lb://ADMIN-SERVICE
+          uri: lb://admin-service
           predicates:
             - Path=/api/admin/**
-
-jwt:
-  secret: YourSuperSecretJWTKeyMustBeAtLeast256BitsLongForHS256Algorithm
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: ${JWT_SECRET:jobportal_super_secret_key_must_be_at_least_32_characters_long}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always

@@ -5,10 +5,11 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
-@FeignClient(name = "AUTH-SERVICE")
+@FeignClient(name = "auth-service")
 public interface AuthServiceClient {
 
     @GetMapping("/api/internal/users")
@@ -16,4 +17,10 @@ public interface AuthServiceClient {
 
     @DeleteMapping("/api/internal/users/{id}")
     void deleteUser(@PathVariable Long id);
+
+    @PutMapping("/api/internal/users/{id}/ban")
+    void banUser(@PathVariable Long id);
+
+    @PutMapping("/api/internal/users/{id}/unban")
+    void unbanUser(@PathVariable Long id);
 }

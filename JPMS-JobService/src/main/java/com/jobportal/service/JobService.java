@@ -1,16 +1,23 @@
 package com.jobportal.service;
 
-import com.jobportal.dto.JobRequest;
-import com.jobportal.dto.JobResponse;
-import com.jobportal.model.Job;
-import com.jobportal.repository.JobRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.jobportal.Exceptions.ForbiddenException;
+import com.jobportal.Exceptions.InvalidJobTypeException;
+import com.jobportal.Exceptions.ResourceNotFoundException;
+import com.jobportal.dto.JobRequestDTO;
+import com.jobportal.dto.JobResponseDTO;
+import com.jobportal.dto.PagedResponse;
+import com.jobportal.entity.Job;
+import com.jobportal.enums.JobStatus;
+import com.jobportal.enums.JobType;
+import com.jobportal.repository.JobRepository;
 
 @Service
 public class JobService {
@@ -18,81 +25,208 @@ public class JobService {
     @Autowired
     private JobRepository jobRepository;
 
-    public JobResponse createJob(JobRequest req, String recruiterEmail) {
-        Job job = new Job();
-        job.setTitle(req.getTitle());
-        job.setCompanyName(req.getCompanyName());
-        job.setLocation(req.getLocation());
-        job.setSalary(req.getSalary());
-        job.setExperience(req.getExperience());
-        job.setDescription(req.getDescription());
-        job.setPostedByEmail(recruiterEmail);
+    // -----------------------------------------------
+    // POST /api/jobs — RECRUITER only
+    // -----------------------------------------------
+    public JobResponseDTO postJob(JobRequestDTO dto, Long postedBy, String userRole) {
+
+        // Only RECRUITER can post jobs
+        if (!userRole.equals("RECRUITER")) {
+        	throw new ForbiddenException("Only recruiters can post jobs");
+        }
+
+        Job job = convertToEntity(dto);
+        job.setPostedBy(postedBy);
+        job.setStatus(JobStatus.ACTIVE);
+
         Job saved = jobRepository.save(job);
-        return toResponse(saved);
+        return convertToResponseDTO(saved);
     }
 
-    public Page<JobResponse> getAllJobs(Pageable pageable) {
-        return jobRepository.findAll(pageable).map(this::toResponse);
+    // -----------------------------------------------
+    // GET /api/jobs — Public — PAGINATED
+    // page=0 means first page, size=10 means 10 jobs per page
+    // -----------------------------------------------
+    public PagedResponse<JobResponseDTO> getAllJobs(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<Job> jobPage = jobRepository.findByStatusNot(JobStatus.DELETED, pageable);
+
+        return buildPagedResponse(jobPage);
     }
 
-    public JobResponse getJobById(Long id) {
-        Job job = jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found: " + id));
-        return toResponse(job);
+    // -----------------------------------------------
+    // GET /api/jobs/{id} — Public
+    // -----------------------------------------------
+    public JobResponseDTO getJobById(Long id) {
+
+        Job job = jobRepository.findByIdAndStatusNot(id, JobStatus.DELETED)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Job not found with id: " + id));
+
+        return convertToResponseDTO(job);
     }
 
-    public Page<JobResponse> search(String keyword, String location, String experience, Pageable pageable) {
-        return jobRepository.search(keyword, location, experience, pageable).map(this::toResponse);
-    }
+    // -----------------------------------------------
+    // GET /api/jobs/search — Public — PAGINATED
+    // -----------------------------------------------
+    public PagedResponse<JobResponseDTO> searchJobs(String title, String location,
+                                                     String jobType, Integer experienceYears,
+                                                     int page, int size) {
 
-    public List<JobResponse> getJobsByRecruiter(String recruiterEmail) {
-        return jobRepository.findByPostedByEmail(recruiterEmail)
-                .stream().map(this::toResponse).collect(Collectors.toList());
-    }
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-    // Only the recruiter who posted the job can update it
-    public JobResponse updateJob(Long id, JobRequest req, String recruiterEmail) {
-        Job job = jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found: " + id));
-        if (!job.getPostedByEmail().equals(recruiterEmail)) {
-            throw new RuntimeException("You can only update your own job listings");
+        // Convert String → JobType enum safely
+        JobType jobTypeEnum = null;
+        if (jobType != null && !jobType.isEmpty()) {
+            try {
+                jobTypeEnum = JobType.valueOf(jobType.toUpperCase());
+            } catch (IllegalArgumentException e) {
+            	 throw new InvalidJobTypeException(
+                         "Invalid job type: " + jobType +
+                         ". Valid values are: FULL_TIME, PART_TIME, REMOTE, CONTRACT");
+            }
         }
-        job.setTitle(req.getTitle());
-        job.setCompanyName(req.getCompanyName());
-        job.setLocation(req.getLocation());
-        job.setSalary(req.getSalary());
-        job.setExperience(req.getExperience());
-        job.setDescription(req.getDescription());
-        return toResponse(jobRepository.save(job));
+        
+        
+        Page<Job> jobPage = jobRepository.searchJobs(
+                title, location, jobTypeEnum, experienceYears, pageable);
+
+        return buildPagedResponse(jobPage);
     }
 
-    // Only the recruiter who posted the job can delete it
-    public void deleteJob(Long id, String recruiterEmail) {
+    // -----------------------------------------------
+    // PUT /api/jobs/{id} — RECRUITER + owner only
+    // -----------------------------------------------
+    public JobResponseDTO updateJob(Long id, JobRequestDTO dto,
+                                    Long currentUserId, String currentUserRole) {
+
+        // Only RECRUITER role allowed
+        if (!currentUserRole.equals("RECRUITER")) {
+        	throw new ForbiddenException("Only recruiters can update jobs");
+        }
+
         Job job = jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found: " + id));
-        if (!job.getPostedByEmail().equals(recruiterEmail)) {
-            throw new RuntimeException("You can only delete your own job listings");
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Job not found with id: " + id));
+
+        // Ownership check — recruiter must own this job
+        if (!job.getPostedBy().equals(currentUserId)) {
+        	throw new ForbiddenException("You can only update your own jobs");
         }
-        jobRepository.delete(job);
+
+        job.setTitle(dto.getTitle());
+        job.setCompanyName(dto.getCompanyName());
+        job.setLocation(dto.getLocation());
+        job.setSalary(dto.getSalary());
+        job.setExperienceYears(dto.getExperienceYears());
+        job.setJobType(JobType.valueOf(dto.getJobType().toUpperCase()));
+        job.setSkillsRequired(dto.getSkillsRequired());
+        job.setDescription(dto.getDescription());
+        job.setDeadline(dto.getDeadline());
+
+        Job updated = jobRepository.save(job);
+        return convertToResponseDTO(updated);
     }
 
-    // Admin-level deletion without ownership check
-    public void deleteJobByAdmin(Long id) {
-        if (!jobRepository.existsById(id)) {
-            throw new RuntimeException("Job not found: " + id);
+    // -----------------------------------------------
+    // DELETE /api/jobs/{id} — RECRUITER + owner only
+    // Soft delete — status = DELETED, record stays in DB
+    // -----------------------------------------------
+    public void deleteJob(Long id, Long currentUserId, String currentUserRole) {
+
+        // Only RECRUITER role allowed
+        if (!currentUserRole.equals("RECRUITER")) {
+        	throw new ForbiddenException("Only recruiters can delete jobs");
         }
-        jobRepository.deleteById(id);
+
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Job not found with id: " + id));
+
+        // Ownership check — recruiter must own this job
+        if (!job.getPostedBy().equals(currentUserId)) {
+        	throw new ForbiddenException("You can only delete your own jobs");
+        }
+
+        // Soft delete — never physically remove from DB
+        job.setStatus(JobStatus.DELETED);
+        jobRepository.save(job);
     }
 
-    public List<JobResponse> getAllJobsList() {
-        return jobRepository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
+    // -----------------------------------------------
+    // GET /api/jobs/my-jobs — RECRUITER only — PAGINATED
+    // -----------------------------------------------
+    public PagedResponse<JobResponseDTO> getMyJobs(Long postedBy,
+                                                    String userRole,
+                                                    int page, int size) {
+
+        // Only RECRUITER can see their own jobs
+        if (!userRole.equals("RECRUITER")) {
+        	throw new ForbiddenException("Only recruiters can access this endpoint");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<Job> jobPage = jobRepository.findByPostedByAndStatusNot(
+                postedBy, JobStatus.DELETED, pageable);
+
+        return buildPagedResponse(jobPage);
     }
 
-    private JobResponse toResponse(Job job) {
-        return new JobResponse(
-                job.getId(), job.getTitle(), job.getCompanyName(), job.getLocation(),
-                job.getSalary(), job.getExperience(), job.getDescription(),
-                job.getPostedByEmail(), job.getCreatedAt()
+    // -----------------------------------------------
+    // PRIVATE HELPER — builds PagedResponse from Page<Job>
+    // -----------------------------------------------
+    private PagedResponse<JobResponseDTO> buildPagedResponse(Page<Job> jobPage) {
+        return new PagedResponse<>(
+                jobPage.getContent()
+                       .stream()
+                       .map(this::convertToResponseDTO)
+                       .toList(),
+                jobPage.getNumber(),       // current page number
+                jobPage.getTotalPages(),   // total pages available
+                jobPage.getTotalElements(), // total records in DB
+                jobPage.isLast()           // is this the last page?
         );
+    }
+
+    // -----------------------------------------------
+    // PRIVATE HELPER — RequestDTO → Entity
+    // -----------------------------------------------
+    private Job convertToEntity(JobRequestDTO dto) {
+        Job job = new Job();
+        job.setTitle(dto.getTitle());
+        job.setCompanyName(dto.getCompanyName());
+        job.setLocation(dto.getLocation());
+        job.setSalary(dto.getSalary());
+        job.setExperienceYears(dto.getExperienceYears());
+        job.setJobType(JobType.valueOf(dto.getJobType().toUpperCase()));
+        job.setSkillsRequired(dto.getSkillsRequired());
+        job.setDescription(dto.getDescription());
+        job.setDeadline(dto.getDeadline());
+        return job;
+    }
+
+    // -----------------------------------------------
+    // PRIVATE HELPER — Entity → ResponseDTO
+    // -----------------------------------------------
+    private JobResponseDTO convertToResponseDTO(Job job) {
+        JobResponseDTO dto = new JobResponseDTO();
+        dto.setId(job.getId());
+        dto.setTitle(job.getTitle());
+        dto.setCompanyName(job.getCompanyName());
+        dto.setLocation(job.getLocation());
+        dto.setSalary(job.getSalary());
+        dto.setExperienceYears(job.getExperienceYears());
+        dto.setJobType(job.getJobType().name());
+        dto.setSkillsRequired(job.getSkillsRequired());
+        dto.setDescription(job.getDescription());
+        dto.setStatus(job.getStatus().name());
+        dto.setDeadline(job.getDeadline());
+        dto.setPostedBy(job.getPostedBy());
+        dto.setCreatedAt(job.getCreatedAt());
+        dto.setUpdatedAt(job.getUpdatedAt());
+        return dto;
     }
 }

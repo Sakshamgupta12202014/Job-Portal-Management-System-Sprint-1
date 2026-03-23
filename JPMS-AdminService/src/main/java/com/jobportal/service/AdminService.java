@@ -26,25 +26,40 @@ public class AdminService {
     @Autowired
     private AuditLogRepository auditLogRepository;
 
+    // ─── User Operations ─────────────────────────────────────────────
+
     public List<UserResponse> getAllUsers() {
         return authServiceClient.getAllUsers();
     }
 
-    public void deleteUser(Long id, String adminEmail) {
+    public void deleteUser(Long id, String adminId) {
         authServiceClient.deleteUser(id);
-        auditLogRepository.save(new AuditLog("DELETE_USER", adminEmail, "Deleted user ID: " + id));
+        auditLogRepository.save(new AuditLog("DELETE_USER", "admin:" + adminId, "Deleted user ID: " + id));
     }
+
+    public void banUser(Long id, String adminId) {
+        authServiceClient.banUser(id);
+        auditLogRepository.save(new AuditLog("BAN_USER", "admin:" + adminId, "Banned user ID: " + id));
+    }
+
+    public void unbanUser(Long id, String adminId) {
+        authServiceClient.unbanUser(id);
+        auditLogRepository.save(new AuditLog("UNBAN_USER", "admin:" + adminId, "Unbanned user ID: " + id));
+    }
+
+    // ─── Job Operations ──────────────────────────────────────────────
 
     public List<JobResponse> getAllJobs() {
         return adminJobClient.getAllJobs();
     }
 
-    public void deleteJob(Long id, String adminEmail) {
+    public void deleteJob(Long id, String adminId) {
         adminJobClient.deleteJob(id);
-        auditLogRepository.save(new AuditLog("DELETE_JOB", adminEmail, "Deleted job ID: " + id));
+        auditLogRepository.save(new AuditLog("DELETE_JOB", "admin:" + adminId, "Deleted job ID: " + id));
     }
 
-    // Aggregates data from all services into a single platform report
+    // ─── Platform Report ─────────────────────────────────────────────
+
     public PlatformReport getReport() {
         List<UserResponse> users = authServiceClient.getAllUsers();
         List<JobResponse> jobs = adminJobClient.getAllJobs();
@@ -54,5 +69,11 @@ public class AdminService {
         report.setUsers(users);
         report.setJobs(jobs);
         return report;
+    }
+
+    // ─── Audit Logs ──────────────────────────────────────────────────
+
+    public List<AuditLog> getAuditLogs() {
+        return auditLogRepository.findAll();
     }
 }

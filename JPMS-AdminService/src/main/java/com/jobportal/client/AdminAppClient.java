@@ -4,7 +4,7 @@ import com.jobportal.dto.ApplicationStats;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(name = "APPLICATION-SERVICE")
+@FeignClient(name = "application-service")
 public interface AdminAppClient {
 
     @GetMapping("/api/internal/applications/stats")
