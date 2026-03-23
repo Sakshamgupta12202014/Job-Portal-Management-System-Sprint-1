@@ -11,86 +11,82 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
- 
-import java.util.List;
- 
 
-public class GatewayJwtFilter implements GlobalFilter , Ordered {
+@Component
+public class GatewayJwtFilter implements GlobalFilter, Ordered {
 
-	private final JwtUtil jwtUtil;
-	 
-    private static final List<String> PUBLIC_ROUTES = List.of(
-            "/api/auth/register",
-            "/api/auth/login",
-            "/api/auth/refresh"
-    );
- 
-    private static final List<String> PUBLIC_GET_ROUTES = List.of(
-            "/api/jobs"
-    );
-    
+    private final JwtUtil jwtUtil;
+
     
     public GatewayJwtFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-    }    
+    }
+
     
-	
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
         String method = request.getMethod().name();
- 
+
+        System.out.println("=== FILTER CALLED === Path: " + path + " Method: " + method);
+
         if (isPublicRoute(path, method)) {
             return chain.filter(exchange);
         }
- 
+
         String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
- 
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return onError(exchange, HttpStatus.UNAUTHORIZED);
         }
- 
+
         String token = authHeader.substring(7);
- 
+
         if (!jwtUtil.isTokenValid(token)) {
             return onError(exchange, HttpStatus.UNAUTHORIZED);
         }
- 
+
         String userId = jwtUtil.extractUserId(token);
         String role = jwtUtil.extractRole(token);
- 
+
+        System.out.println("=== GATEWAY DEBUG ===");
+        System.out.println("Path: " + path);
+        System.out.println("UserId: " + userId);
+        System.out.println("Role: " + role);
+
         ServerHttpRequest modifiedRequest = request.mutate()
                 .header("X-User-Id", userId)
                 .header("X-User-Role", role)
                 .build();
- 
+
         return chain.filter(exchange.mutate().request(modifiedRequest).build());
     }
-    
- 
+
     private boolean isPublicRoute(String path, String method) {
-        if (PUBLIC_ROUTES.stream().anyMatch(path::startsWith)) {
-            return true;
+        if (path.equals("/api/auth/register")) return true;
+        if (path.equals("/api/auth/login")) return true;
+        if (path.equals("/api/auth/refresh")) return true;
+
+        if ("GET".equalsIgnoreCase(method)) {
+            if (path.equals("/api/jobs")) return true;
+            if (path.equals("/api/jobs/search")) return true;
+            if (path.matches("/api/jobs/\\d+")) return true;
         }
-        if ("GET".equalsIgnoreCase(method) &&
-                PUBLIC_GET_ROUTES.stream().anyMatch(path::startsWith)) {
-            return true;
-        }
+
         return false;
     }
- 
+
     
     private Mono<Void> onError(ServerWebExchange exchange, HttpStatus status) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(status);
         return response.setComplete();
     }
- 
+
     
     @Override
     public int getOrder() {
         return -1;
     }
-	
 }

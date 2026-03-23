@@ -1,34 +1,53 @@
 package com.jobportal.auth.service;
 
+import java.io.IOException;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jobportal.auth.dao.UserRepository;
 import com.jobportal.auth.dto.AuthResponse;
 import com.jobportal.auth.dto.LoginRequest;
 import com.jobportal.auth.dto.RegisterRequest;
+import com.jobportal.auth.dto.UserProfileResponse;
 import com.jobportal.auth.entity.User;
+import com.jobportal.auth.enums.Role;
 import com.jobportal.auth.enums.UserStatus;
 import com.jobportal.auth.exception.ResourceNotFoundException;
 import com.jobportal.auth.exception.UserAlreadyExistsException;
 import com.jobportal.auth.security.JwtUtil;
+import com.jobportal.auth.util.CloudinaryUtil;
 
 @Service
 public class AuthService {
 	
-	@Autowired
-	UserRepository userRepository;
-	
-	@Autowired
-	PasswordEncoder passwordEncoder;
-	
-	@Autowired
-	JwtUtil jwtUtil;
+	private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final CloudinaryUtil cloudinaryUtil;
+
+    
+    public AuthService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       JwtUtil jwtUtil,
+                       CloudinaryUtil cloudinaryUtil) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.cloudinaryUtil = cloudinaryUtil;
+    }
 
 	
 	
 	public AuthResponse register(RegisterRequest request) {
+		
+		if(request.getRole() == Role.ADMIN) {
+			throw new IllegalArgumentException("Admin registration is not allowed");
+		}
+		
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException("Email already in use: " + request.getEmail());
         }
@@ -42,7 +61,12 @@ public class AuthService {
 
         userRepository.save(user);
 
-
+//        rabbitTemplate.convertAndSend(
+//    	    RabbitMQConfig.EXCHANGE,
+//    	    RabbitMQConfig.USER_REGISTERED_KEY,
+//    	    new UserRegisteredEvent(user.getId(), user.getName(), user.getEmail(), user.getRole().name())
+//    	);
+        
         return new AuthResponse("Registration successful. Please login.");
     }	
 	
@@ -102,6 +126,39 @@ public class AuthService {
 
 	    user.setRefreshToken(null);
 	    userRepository.save(user);
+	}
+	
+	
+	public String updateProfilePicture(Long userId, MultipartFile picture) throws IOException {
+	    User user = userRepository.findById(userId).orElse(null);
+	    if (user == null) {
+	        throw new ResourceNotFoundException("User not found");
+	    }
+	    String url = cloudinaryUtil.uploadProfilePicture(picture);
+	    user.setProfilePictureUrl(url);
+	    userRepository.save(user);
+	    return url;
+	}
+
+	
+	public String updateProfileResume(Long userId, MultipartFile resume) throws IOException {
+	    User user = userRepository.findById(userId).orElse(null);
+	    if (user == null) {
+	        throw new ResourceNotFoundException("User not found");
+	    }
+	    String url = cloudinaryUtil.uploadResume(resume);
+	    user.setResumeUrl(url);
+	    userRepository.save(user);
+	    return url;
+	}
+
+	
+	public UserProfileResponse getProfile(Long userId) {
+	    User user = userRepository.findById(userId).orElse(null);
+	    if (user == null) {
+	        throw new ResourceNotFoundException("User not found");
+	    }
+	    return UserProfileResponse.fromEntity(user);
 	}
 	
 }

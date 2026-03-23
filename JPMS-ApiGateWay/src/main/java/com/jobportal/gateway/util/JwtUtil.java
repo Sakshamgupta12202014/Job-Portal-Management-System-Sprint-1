@@ -32,9 +32,12 @@ public class JwtUtil {
     
     public boolean isTokenValid(String token) {
         try {
-            Claims claims = extractAllClaims(token);
-            return !claims.getExpiration().before(new Date());
+        	Claims claims = extractAllClaims(token);
+            boolean valid = !claims.getExpiration().before(new Date());
+            System.out.println("Token valid: " + valid);
+            return valid;
         } catch (Exception e) {
+        	System.out.println("Token validation failed: " + e.getMessage());
             return false;
         }
     }

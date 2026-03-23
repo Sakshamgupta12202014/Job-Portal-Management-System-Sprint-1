@@ -20,11 +20,15 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
+  servlet:
+    multipart:
+        max-file-size: 10MB
+        max-request-size: 11MB
 
 eureka:
   client:
@@ -35,8 +39,13 @@ eureka:
 
 jwt:
   secret: jobportal_super_secret_key_must_be_at_least_32_characters_long  
-  access-expiry-ms: 900000
+  access-expiry-ms: 9000000
   refresh-expiry-ms: 604800000
+
+cloudinary:
+  cloud-name: drp2tntul
+  api-key: 488716938256727
+  api-secret: IsHJpXYjAZJTAoBlyURzC_H7nFU
 
 management:
   endpoints:
