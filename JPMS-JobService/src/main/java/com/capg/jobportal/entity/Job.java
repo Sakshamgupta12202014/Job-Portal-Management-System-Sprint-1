@@ -1,11 +1,11 @@
-package com.jobportal.entity;
+package com.capg.jobportal.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.jobportal.enums.JobStatus;
-import com.jobportal.enums.JobType;
+import com.capg.jobportal.enums.JobStatus;
+import com.capg.jobportal.enums.JobType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

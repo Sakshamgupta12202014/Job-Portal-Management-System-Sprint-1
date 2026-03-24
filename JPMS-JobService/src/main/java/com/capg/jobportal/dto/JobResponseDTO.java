@@ -1,4 +1,4 @@
-package com.jobportal.dto;
+package com.capg.jobportal.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

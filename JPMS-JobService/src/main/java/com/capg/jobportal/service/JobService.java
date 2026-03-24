@@ -1,4 +1,4 @@
-package com.jobportal.service;
+package com.capg.jobportal.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +8,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.jobportal.Exceptions.ForbiddenException;
-import com.jobportal.Exceptions.InvalidJobTypeException;
-import com.jobportal.Exceptions.ResourceNotFoundException;
-import com.jobportal.dto.JobRequestDTO;
-import com.jobportal.dto.JobResponseDTO;
-import com.jobportal.dto.PagedResponse;
-import com.jobportal.entity.Job;
-import com.jobportal.enums.JobStatus;
-import com.jobportal.enums.JobType;
-import com.jobportal.repository.JobRepository;
+import com.capg.jobportal.Exceptions.ForbiddenException;
+import com.capg.jobportal.Exceptions.InvalidJobTypeException;
+import com.capg.jobportal.Exceptions.ResourceNotFoundException;
+import com.capg.jobportal.dto.JobRequestDTO;
+import com.capg.jobportal.dto.JobResponseDTO;
+import com.capg.jobportal.dto.PagedResponse;
+import com.capg.jobportal.entity.Job;
+import com.capg.jobportal.enums.JobStatus;
+import com.capg.jobportal.enums.JobType;
+import com.capg.jobportal.repository.JobRepository;
 
 @Service
 public class JobService {

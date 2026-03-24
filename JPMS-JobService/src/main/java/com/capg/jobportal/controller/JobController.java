@@ -1,4 +1,4 @@
-package com.jobportal.controller;
+package com.capg.jobportal.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jobportal.dto.JobRequestDTO;
-import com.jobportal.dto.JobResponseDTO;
-import com.jobportal.dto.PagedResponse;
-import com.jobportal.service.JobService;
+import com.capg.jobportal.dto.JobRequestDTO;
+import com.capg.jobportal.dto.JobResponseDTO;
+import com.capg.jobportal.dto.PagedResponse;
+import com.capg.jobportal.service.JobService;
 
 @RestController
 @RequestMapping("/api/jobs")

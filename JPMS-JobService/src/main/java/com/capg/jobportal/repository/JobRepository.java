@@ -1,4 +1,4 @@
-package com.jobportal.repository;
+package com.capg.jobportal.repository;
 
 
 import java.util.Optional;
@@ -10,9 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.jobportal.entity.Job;
-import com.jobportal.enums.JobStatus;
-import com.jobportal.enums.JobType;
+import com.capg.jobportal.entity.Job;
+import com.capg.jobportal.enums.JobStatus;
+import com.capg.jobportal.enums.JobType;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {

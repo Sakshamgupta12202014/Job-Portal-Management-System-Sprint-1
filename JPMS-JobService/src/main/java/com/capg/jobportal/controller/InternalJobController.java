@@ -1,7 +1,8 @@
-package com.jobportal.controller;
+package com.capg.jobportal.controller;
 
-import com.jobportal.dto.JobResponseDTO;
-import com.jobportal.service.JobService;
+import com.capg.jobportal.dto.JobResponseDTO;
+import com.capg.jobportal.service.JobService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

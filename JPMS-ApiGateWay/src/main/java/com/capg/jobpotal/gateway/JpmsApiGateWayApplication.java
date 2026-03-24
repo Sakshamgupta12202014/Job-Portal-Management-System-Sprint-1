@@ -1,4 +1,4 @@
-package com.jobpotal.gateway;
+package com.capg.jobpotal.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

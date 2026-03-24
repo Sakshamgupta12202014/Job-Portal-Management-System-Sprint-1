@@ -1,11 +1,12 @@
-package com.jobportal.controller;
+package com.capg.jobportal.controller;
 
-import com.jobportal.dto.JobResponse;
-import com.jobportal.dto.PlatformReport;
-import com.jobportal.dto.UserResponse;
-import com.jobportal.exception.AccessDeniedException;
-import com.jobportal.model.AuditLog;
-import com.jobportal.service.AdminService;
+import com.capg.jobportal.dto.JobResponse;
+import com.capg.jobportal.dto.PlatformReport;
+import com.capg.jobportal.dto.UserResponse;
+import com.capg.jobportal.exception.AccessDeniedException;
+import com.capg.jobportal.model.AuditLog;
+import com.capg.jobportal.service.AdminService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

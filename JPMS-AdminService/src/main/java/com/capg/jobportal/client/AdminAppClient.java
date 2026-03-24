@@ -1,8 +1,9 @@
-package com.jobportal.client;
+package com.capg.jobportal.client;
 
-import com.jobportal.dto.ApplicationStats;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.capg.jobportal.dto.ApplicationStats;
 
 @FeignClient(name = "application-service")
 public interface AdminAppClient {

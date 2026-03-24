@@ -1,4 +1,4 @@
-package com.jobportal.exception;
+package com.capg.jobportal.exception;
 
 public class AccessDeniedException extends RuntimeException {
 

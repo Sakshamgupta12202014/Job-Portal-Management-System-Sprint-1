@@ -1,4 +1,4 @@
-package com.jobportal.gateway.util;
+package com.capg.jobportal.gateway.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

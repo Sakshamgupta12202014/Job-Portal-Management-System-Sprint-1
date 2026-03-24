@@ -1,11 +1,11 @@
-package com.jobportal.Exceptions;
+package com.capg.jobportal.Exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.jobportal.dto.ErrorResponse;
+import com.capg.jobportal.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

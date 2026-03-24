@@ -1,4 +1,4 @@
-package com.jobportal.enums;
+package com.capg.jobportal.enums;
 
 public enum JobStatus {
 	 	ACTIVE,

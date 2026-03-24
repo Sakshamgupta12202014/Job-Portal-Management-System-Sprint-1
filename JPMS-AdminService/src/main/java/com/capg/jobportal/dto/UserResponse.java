@@ -1,4 +1,4 @@
-package com.jobportal.dto;
+package com.capg.jobportal.dto;
 
 public class UserResponse {
 

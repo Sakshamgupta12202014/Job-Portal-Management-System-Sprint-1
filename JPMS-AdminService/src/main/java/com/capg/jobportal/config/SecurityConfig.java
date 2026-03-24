@@ -1,4 +1,4 @@
-package com.jobportal.config;
+package com.capg.jobportal.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

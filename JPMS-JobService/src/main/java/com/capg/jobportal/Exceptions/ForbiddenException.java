@@ -1,4 +1,4 @@
-package com.jobportal.Exceptions;
+package com.capg.jobportal.Exceptions;
 
 public class ForbiddenException extends RuntimeException {
     public ForbiddenException(String message) {

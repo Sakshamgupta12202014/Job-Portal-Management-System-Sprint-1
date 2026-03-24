@@ -1,4 +1,4 @@
-package com.jobportal.model;
+package com.capg.jobportal.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

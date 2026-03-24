@@ -1,10 +1,11 @@
-package com.jobportal.client;
+package com.capg.jobportal.client;
 
-import com.jobportal.dto.JobResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import com.capg.jobportal.dto.JobResponse;
 
 import java.util.List;
 

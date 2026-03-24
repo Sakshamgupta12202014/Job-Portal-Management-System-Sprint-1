@@ -1,11 +1,12 @@
-package com.jobportal.service;
+package com.capg.jobportal.service;
 
-import com.jobportal.client.AdminAppClient;
-import com.jobportal.client.AdminJobClient;
-import com.jobportal.client.AuthServiceClient;
-import com.jobportal.dto.*;
-import com.jobportal.model.AuditLog;
-import com.jobportal.repository.AuditLogRepository;
+import com.capg.jobportal.client.AdminAppClient;
+import com.capg.jobportal.client.AdminJobClient;
+import com.capg.jobportal.client.AuthServiceClient;
+import com.capg.jobportal.dto.*;
+import com.capg.jobportal.model.AuditLog;
+import com.capg.jobportal.repository.AuditLogRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

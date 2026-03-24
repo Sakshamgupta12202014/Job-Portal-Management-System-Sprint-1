@@ -1,6 +1,5 @@
-package com.jobportal.exception;
+package com.capg.jobportal.exception;
 
-import com.jobportal.dto.ErrorResponse;
 import feign.FeignException;
 import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.http.HttpStatus;
@@ -8,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.capg.jobportal.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
