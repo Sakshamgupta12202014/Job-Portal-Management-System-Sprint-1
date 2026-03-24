@@ -1,14 +1,14 @@
-package com.jobportal.auth.service;
+package com.capg.jobportal.auth.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jobportal.auth.dao.UserRepository;
-import com.jobportal.auth.entity.User;
-import com.jobportal.auth.enums.UserStatus;
-import com.jobportal.auth.exception.ResourceNotFoundException;
+import com.capg.jobportal.auth.dao.UserRepository;
+import com.capg.jobportal.auth.entity.User;
+import com.capg.jobportal.auth.enums.UserStatus;
+import com.capg.jobportal.auth.exception.ResourceNotFoundException;
 
 @Service
 public class UserService {

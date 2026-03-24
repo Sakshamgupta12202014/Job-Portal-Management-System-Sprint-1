@@ -1,4 +1,4 @@
-package com.jobportal.auth.dto;
+package com.capg.jobportal.auth.dto;
 
 public class AuthResponse {
 	

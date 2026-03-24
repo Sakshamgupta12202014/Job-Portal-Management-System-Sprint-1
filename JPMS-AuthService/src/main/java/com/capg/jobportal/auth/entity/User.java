@@ -1,9 +1,9 @@
-package com.jobportal.auth.entity;
+package com.capg.jobportal.auth.entity;
 
 import java.time.LocalDateTime;
 
-import com.jobportal.auth.enums.Role;
-import com.jobportal.auth.enums.UserStatus;
+import com.capg.jobportal.auth.enums.Role;
+import com.capg.jobportal.auth.enums.UserStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

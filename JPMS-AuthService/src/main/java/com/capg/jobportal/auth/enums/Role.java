@@ -1,4 +1,4 @@
-package com.jobportal.auth.enums;
+package com.capg.jobportal.auth.enums;
 
 public enum Role {
 	JOB_SEEKER,

@@ -1,4 +1,4 @@
-package com.jobportal.auth.controller;
+package com.capg.jobportal.auth.controller;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jobportal.auth.entity.User;
-import com.jobportal.auth.service.UserService;
+import com.capg.jobportal.auth.entity.User;
+import com.capg.jobportal.auth.service.UserService;
 
 @RestController
 @RequestMapping("/api/internal")

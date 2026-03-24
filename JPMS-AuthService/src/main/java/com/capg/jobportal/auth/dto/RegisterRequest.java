@@ -1,6 +1,6 @@
-package com.jobportal.auth.dto;
+package com.capg.jobportal.auth.dto;
 
-import com.jobportal.auth.enums.Role;
+import com.capg.jobportal.auth.enums.Role;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

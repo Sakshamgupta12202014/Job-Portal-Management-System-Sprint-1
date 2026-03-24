@@ -1,18 +1,18 @@
-package com.jobportal.auth.service;
+package com.capg.jobportal.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.jobportal.auth.dao.UserRepository;
-import com.jobportal.auth.dto.AuthResponse;
-import com.jobportal.auth.dto.LoginRequest;
-import com.jobportal.auth.dto.RegisterRequest;
-import com.jobportal.auth.entity.User;
-import com.jobportal.auth.enums.UserStatus;
-import com.jobportal.auth.exception.ResourceNotFoundException;
-import com.jobportal.auth.exception.UserAlreadyExistsException;
-import com.jobportal.auth.security.JwtUtil;
+import com.capg.jobportal.auth.dao.UserRepository;
+import com.capg.jobportal.auth.dto.AuthResponse;
+import com.capg.jobportal.auth.dto.LoginRequest;
+import com.capg.jobportal.auth.dto.RegisterRequest;
+import com.capg.jobportal.auth.entity.User;
+import com.capg.jobportal.auth.enums.UserStatus;
+import com.capg.jobportal.auth.exception.ResourceNotFoundException;
+import com.capg.jobportal.auth.exception.UserAlreadyExistsException;
+import com.capg.jobportal.auth.security.JwtUtil;
 
 @Service
 public class AuthService {

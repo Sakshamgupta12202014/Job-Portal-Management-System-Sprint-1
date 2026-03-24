@@ -1,4 +1,4 @@
-package com.jobportal.auth.security;
+package com.capg.jobportal.auth.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

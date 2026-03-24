@@ -1,4 +1,4 @@
-package com.jobportal.auth.exception;
+package com.capg.jobportal.auth.exception;
 
 import java.util.stream.Collectors;
 
@@ -9,7 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.jobportal.auth.dto.ErrorResponse;
+import com.capg.jobportal.auth.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionhandler  {

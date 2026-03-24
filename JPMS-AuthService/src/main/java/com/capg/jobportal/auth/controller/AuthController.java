@@ -1,4 +1,4 @@
-package com.jobportal.auth.controller;
+package com.capg.jobportal.auth.controller;
 
 import java.util.Map;
 
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jobportal.auth.dto.AuthResponse;
-import com.jobportal.auth.dto.LoginRequest;
-import com.jobportal.auth.dto.RegisterRequest;
-import com.jobportal.auth.service.AuthService;
+import com.capg.jobportal.auth.dto.AuthResponse;
+import com.capg.jobportal.auth.dto.LoginRequest;
+import com.capg.jobportal.auth.dto.RegisterRequest;
+import com.capg.jobportal.auth.service.AuthService;
 
 import jakarta.validation.Valid;
 

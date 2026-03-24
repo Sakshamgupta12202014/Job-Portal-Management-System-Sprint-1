@@ -30,6 +30,10 @@ public class GatewayJwtFilter implements GlobalFilter , Ordered {
             "/api/jobs"
     );
     
+    private static final List<String> ADMIN_ONLY_ROUTES = List.of(
+			"/api/admin"
+	);
+    
     
     public GatewayJwtFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -60,7 +64,12 @@ public class GatewayJwtFilter implements GlobalFilter , Ordered {
  
         String userId = jwtUtil.extractUserId(token);
         String role = jwtUtil.extractRole(token);
- 
+
+        // Block non-ADMIN users from admin routes at the gateway level
+        if (isAdminRoute(path) && !"ADMIN".equalsIgnoreCase(role)) {
+            return onError(exchange, HttpStatus.FORBIDDEN);
+        }
+
         ServerHttpRequest modifiedRequest = request.mutate()
                 .header("X-User-Id", userId)
                 .header("X-User-Role", role)
@@ -79,6 +88,10 @@ public class GatewayJwtFilter implements GlobalFilter , Ordered {
             return true;
         }
         return false;
+    }
+
+    private boolean isAdminRoute(String path) {
+        return ADMIN_ONLY_ROUTES.stream().anyMatch(path::startsWith);
     }
  
     

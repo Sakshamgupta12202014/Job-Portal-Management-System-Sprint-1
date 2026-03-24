@@ -57,6 +57,27 @@ public class JobService {
     }
 
     // -----------------------------------------------
+    // GET /api/internal/jobs/all — Admin only — flat list
+    // -----------------------------------------------
+    public java.util.List<JobResponseDTO> getAllJobsList() {
+        return jobRepository.findAll()
+                .stream()
+                .filter(job -> job.getStatus() != JobStatus.DELETED)
+                .map(this::convertToResponseDTO)
+                .toList();
+    }
+
+    // -----------------------------------------------
+    // DELETE /api/internal/jobs/{id} — Admin hard delete
+    // -----------------------------------------------
+    public void deleteJobByAdmin(Long id) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Job not found with id: " + id));
+        jobRepository.delete(job);
+    }
+
+    // -----------------------------------------------
     // GET /api/jobs/{id} — Public
     // -----------------------------------------------
     public JobResponseDTO getJobById(Long id) {

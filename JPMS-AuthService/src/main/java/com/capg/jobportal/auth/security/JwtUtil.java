@@ -1,4 +1,4 @@
-package com.jobportal.auth.security;
+package com.capg.jobportal.auth.security;
 
 import java.util.Date;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.jobportal.auth.exception;
+package com.capg.jobportal.auth.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 	
