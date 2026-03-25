@@ -1,19 +1,23 @@
 package com.capg.springboot.controller;
 
-import com.capg.springboot.dto.*;
-import com.capg.springboot.service.ApplicationService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import java.awt.PageAttributes.MediaType;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import com.capg.springboot.dto.ApplicationResponse;
+import com.capg.springboot.dto.RecruiterApplicationResponse;
+import com.capg.springboot.dto.StatusUpdateRequest;
+import com.capg.springboot.service.ApplicationService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/applications")
